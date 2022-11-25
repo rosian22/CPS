@@ -13,6 +13,7 @@ import Button from '@mui/material/Button';
 function App() {
 
   const [orders, setOrders] = useState([]);
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
 		setOrdersAsync().catch(console.error);
@@ -32,13 +33,23 @@ function App() {
     setOrdersAsync();
   }
 
-  const print = () => {
-    window.print();
+  const print = (event) => {
+    event.preventDefault();
+    setIsVisible(false);
+    setTimeout(() => {
+      window.print();
+      setIsVisible(true);
+    },1000)
+  }
+
+  const onPrintChange = (event) => {
+    debugger;
+    setIsVisible(true);
   }
 
   return (
     <div className="App">
-      <header>CSP App</header>
+      {isVisible ? <header>CSP App</header> : null}
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
@@ -70,11 +81,13 @@ function App() {
             </TableBody>
           </Table>
         </TableContainer>
-        <Button variant="contained" component="label" onChange={onFileUploaded}> Upload File
+        {isVisible ? <Button variant="contained" component="label" onChange={onFileUploaded}> Upload File
               <input type="file" hidden/>
-        </Button>
-        <Button variant="contained" component="label" onClick={print}> Print
-        </Button>
+        </Button> : null}
+        
+        {isVisible ? <Button variant="contained" component="label" onClick={print} onChange={onPrintChange}> Print
+        </Button> : null}
+        
     </div>
   );
 }
